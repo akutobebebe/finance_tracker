@@ -1,15 +1,22 @@
-# Використовуємо легку версію Linux з Python 3.11
 FROM python:3.11-slim
 
-# Налаштування, щоб Python не створював зайві файли .pyc
+# Налаштування Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Створюємо робочу папку всередині контейнера
+# Робоча папка
 WORKDIR /app
 
-# Копіюємо файли з твого макбука в контейнер
+# 1. Копіюємо файл із залежностями
+COPY requirements.txt .
+
+# 2. Встановлюємо бібліотеки
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 3. Копіюємо весь інший код
 COPY . .
 
-# Команда, яка запуститься при старті
-CMD ["python", "main.py"]
+# 4. Запускаємо сервер uvicorn
+# --host 0.0.0.0 дозволяє доступ ззовні контейнера
+# --reload перезапускає сервер, коли ти змінюєш код
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

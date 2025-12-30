@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Наш Python-додаток
+  app:
+    build: .
+    ports:
+      - "8000:8000"  # Відкриваємо порт назовні
+    volumes:
+      - .:/app       # "Дзеркало": зміниш код на ноуті -> зміниться в контейнері
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/finance_db
+    depends_on:
+      - db           # Чекаємо, поки запуститься база
+
+  # База даних PostgreSQL
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Щоб дані не зникали при перезапуску
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=finance_db
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

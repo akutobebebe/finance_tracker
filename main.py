@@ -1,12 +1,15 @@
 import sys
 import os
 
-def main():
-    print("=========================================")
-    print("🚀 Finance Tracker запускається в Docker!")
-    print(f"🐍 Версія Python: {sys.version.split()[0]}")
-    print(f"💻 Операційна система: {sys.platform}")
-    print("=========================================")
+from fastapi import FastAPI
 
-if __name__ == "__main__":
-    main()
+# Ось вона - змінна app, яку шукає Docker!
+app = FastAPI(
+    title="Finance Tracker API",
+    description="Мій перший серйозний проєкт на FastAPI",
+    version="1.0.0"
+)
+
+@app.get("/")
+def read_root():
+    return {"message": "Вітаю! API працює і підключено до Docker! 🚀"}
